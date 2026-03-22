@@ -1,10 +1,13 @@
 # RimWorld Mod Translator (Enhanced)
-
+Update README for v3.0 (Advanced Features)
 RimWorld Modの翻訳作業を支援する強化版Pythonツール。ModフォルダからXMLファイルを解析し、日本語翻訳テンプレートを自動生成します。
 
 ## ✨ 新機能（v2.0）
 
-- 🔑 **Keyed翻訳対応**: UI・メッセージなどのKeyed文字列を抽出
+- 🔑 **Keyed翻訳対応**: UI・メッセージなどのKeyed文字列を抽出- Added v3.0 feature highlights
+- Added installation steps for new dependencies
+- Updated usage examples with XLSX support
+- Updated credits section
 - 📦 **Patches翻訳対応**: 他Mod互換性パッチの翻訳も可能
 - 📂 **LoadFolders.xml生成**: バージョン別・DLC別の翻訳管理
 - 📊 **翻訳進捗レポート**: 翻訳状況を可視化
