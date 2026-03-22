@@ -1,0 +1,3 @@
+# RimWorld Mod Translator Dependencies
+# This tool uses only Python standard library
+# No external dependencies required
