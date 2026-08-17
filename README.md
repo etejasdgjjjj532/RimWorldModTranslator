@@ -1,215 +1,163 @@
-# RimWorld Mod Translator (Enhanced)
-Update README for v3.0 (Advanced Features)
-RimWorld Modの翻訳作業を支援する強化版Pythonツール。ModフォルダからXMLファイルを解析し、日本語翻訳テンプレートを自動生成します。
+RimWorld Mod Translator
 
-## ✨ 新機能（v2.0）
+RimWorld Modの翻訳作業を支援するPythonツールです。
 
-- 🔑 **Keyed翻訳対応**: UI・メッセージなどのKeyed文字列を抽出- Added v3.0 feature highlights
-- Added installation steps for new dependencies
-- Updated usage examples with XLSX support
-- Updated credits section
-- 📦 **Patches翻訳対応**: 他Mod互換性パッチの翻訳も可能
-- 📂 **LoadFolders.xml生成**: バージョン別・DLC別の翻訳管理
-- 📊 **翻訳進捗レポート**: 翻訳状況を可視化
-- 🔄 **既存翻訳マージ**: 既存翻訳を保持しながら新規文字列を追加
-- 🎯 **拡張フィールド対応**: 16種類の翻訳可能フィールドに対応
+Mod内のXMLファイルを解析し、DefInjectedやKeyedなどの翻訳対象文字列を抽出できます。抽出したデータはExcel（XLSX）形式で出力でき、既存の日本語翻訳を利用した作業にも対応しています。
 
-## 特徴
+現在も開発中のため、一部の機能は未実装または簡易実装です。
 
-- ✨ **シンプル**: Python標準ライブラリのみ使用（外部依存なし）
-- 🚀 **高速**: XMLパースで翻訳可能な文字列を一括抽出
-- 📝 **完全対応**: DefInjected / Keyed / Patches すべてサポート
-- 🎯 **RimWorld準拠**: v1.6対応、DefInjectedフォーマットに完全準拠
+主な機能
 
-## インストール
+実装済み
 
-### 前提条件
-- Python 3.7以降
+* DefInjected抽出
+    * Modの Defs フォルダを解析
+    * 翻訳対象となるフィールドを抽出
+    * Def名、元テキスト、ファイル名などを取得
+* Keyed抽出
+    * Languages/English/Keyed 内のXMLを解析
+    * Keyed形式の翻訳対象を抽出
+* Excel（XLSX）出力
+    * DefInjectedとKeyedをシート別に出力
+    * 翻訳作業用データとして利用可能
+* 既存DefInjected翻訳の読み込み
+    * Languages/Japanese/DefInjected 内の既存翻訳を読み込み
+    * 抽出データへ既存翻訳を反映
+* GUI
+    * Tkinterを使用した簡易GUI
+    * Modフォルダを選択して翻訳対象を抽出可能
 
-### セットアップ
+開発中・未実装
 
-```bash
+以下の機能はコード上に構想または一部処理がありますが、現在は完全には実装されていません。
+
+* XML翻訳テンプレートの自動生成
+* Patchesの翻訳抽出
+* Keyedの既存翻訳マージ
+* LoadFolders.xmlの自動生成
+* 翻訳進捗レポート
+* 複雑なXML階層・リスト構造への完全対応
+* ParentDefなどの継承関係を利用した高度な解析
+
+必要環境
+
+* Python 3.7以降
+* pandas
+* openpyxl
+
+インストール
+
+リポジトリをクローンします。
+
 git clone https://github.com/etejasdgjjjj532/RimWorldModTranslator.git
 cd RimWorldModTranslator
-```
 
-外部ライブラリは不要です（Python標準ライブラリのみ使用）。
+必要なPythonパッケージをインストールします。
 
-## 使い方
+pip install -r requirements.txt
 
-### 基本的な使用方法
+使い方
 
-```bash
-python translator.py <RimWorld Modフォルダのパス>
-```
+GUI
 
-例：
-```bash
-python translator.py "C:/Program Files (x86)/Steam/steamapps/workshop/content/294100/1234567890"
-```
+python gui.py
 
-### オプション
+GUIからRimWorld Modのフォルダを選択し、翻訳対象を抽出できます。
 
-```bash
-python translator.py <Modパス> [オプション]
-```
+CLI
 
-| オプション | 説明 |
-|-----------|------|
-| `-o, --output <パス>` | 翻訳ファイルの出力先（デフォルト: `./output`） |
-| `-m, --merge` | 既存翻訳とマージ（既存の翻訳を保持） |
-| `-r, --report` | 翻訳進捗レポートを生成 |
-| `--no-keyed` | Keyed翻訳の抽出をスキップ |
-| `--no-patches` | Patches翻訳の抽出をスキップ |
+Excel形式で抽出する場合：
 
-### 使用例
+python translator.py "path/to/mod" --xlsx
 
-**完全抽出（推奨）:**
-```bash
-python translator.py "path/to/mod" -o "./translation" -r
-```
+出力先を指定する場合：
 
-**既存翻訳とマージ:**
-```bash
-python translator.py "path/to/mod" -m -r
-```
+python translator.py "path/to/mod" --xlsx -o "./translation"
 
-**DefInjectedのみ:**
-```bash
-python translator.py "path/to/mod" --no-keyed --no-patches
-```
+既存の日本語DefInjected翻訳を読み込む場合：
 
-### 出力構造
+python translator.py "path/to/mod" --xlsx --merge
 
-ツールは以下のような構造で翻訳テンプレートを生成します：
+CLIオプション
 
-```
-output/
-├── Japanese/
-│   ├── DefInjected/
-│   │   ├── ThingDef.xml
-│   │   ├── ResearchProjectDef.xml
-│   │   └── ...
-│   ├── Keyed/
-│   │   └── Keys.xml
-│   └── Patches/
-│       └── PatchOperations.xml
-├── LoadFolders.xml
-└── TranslationReport.txt  (--report使用時)
-```
+オプション	説明
+-o, --output <path>	出力フォルダを指定
+-x, --xlsx	Excel（XLSX）形式で出力
+-m, --merge	既存の日本語DefInjected翻訳を読み込む
 
-各XMLファイルには翻訳待ちのエントリが含まれます：
+Excel出力
 
-```xml
-<?xml version='1.0' encoding='UTF-8'?>
-<LanguageData>
-  <ThingDef.MyItem.label>TODO: Original English Text</ThingDef.MyItem.label>
-  <ThingDef.MyItem.description>TODO: Original description here</ThingDef.MyItem.description>
-</LanguageData>
-```
+現在の主要な出力形式はXLSXです。
 
-## 翻訳ワークフロー
+翻訳対象が存在する場合、以下のシートが生成されます。
 
-1. **抽出**: ツールを実行してテンプレートを生成
-2. **翻訳**: 各XMLファイルの `TODO:` 部分を日本語に置換
-3. **配置**: 翻訳済みファイルをModの `Languages/Japanese/` フォルダにコピー
-4. **テスト**: RimWorldで動作確認
-5. **更新**: Mod更新時は `-m` オプションで既存翻訳を保持
+* DefInjected
+* Keyed
 
-## 対応翻訳フィールド
+DefInjectedでは主に以下の情報を出力します。
 
-以下16種類のフィールドを自動抽出します：
+* Def Type
+* 翻訳パス
+* 原文
+* 翻訳
+* 元ファイル
+* ParentDef
 
-- `label`, `labelShort`, `labelMale`, `labelFemale`
-- `description`, `descriptionShort`, `descriptionHyperlinks`
-- `jobString`, `gerund`, `verb`
-- `pawnSingular`, `pawnsPlural`
-- `customLabel`, `skillLabel`
-- `chargeNoun`, `destroyedLabel`
+Keyedでは主に以下を出力します。
 
-## 翻訳進捗レポート
+* Key
+* 原文
+* 翻訳
+* 元ファイル
 
-`-r` オプションで生成される `TranslationReport.txt` の例：
+対応している翻訳対象
 
-```
-RimWorld Mod Translation Report
-Generated: 2026-03-22 12:00:00
-============================================================
+Def XML内では、label、description、jobString、text、inspectString など複数の翻訳対象フィールドを検出します。
 
-Total strings: 1,234
-Translated: 856 (69.4%)
-Untranslated: 378
+現在の抽出処理は比較的単純なXML構造を対象としており、ネストされた要素やリスト内に同名フィールドが複数存在する場合など、複雑なDefでは正確なDefInjectedパスを生成できない可能性があります。
 
-============================================================
-Untranslated strings:
+既存翻訳の利用
 
-ThingDef.Gun_Pistol.label: Pistol
-ThingDef.Gun_Pistol.description: A simple pistol...
-...
-```
+--merge を指定すると、
 
-## RimTransとの比較
+Languages/Japanese/DefInjected/
 
-| 機能 | RimWorldModTranslator | RimTrans |
-|------|----------------------|----------|
-| 言語 | Python | TypeScript/C# |
-| GUI | CLI | Electron GUI |
-| 依存関係 | なし | Node.js/Electron |
-| DefInjected | ✅ | ✅ |
-| Keyed | ✅ | ✅ |
-| Patches | ✅ | ❌ |
-| LoadFolders.xml | ✅ 自動生成 | ❌ |
-| 翻訳進捗レポート | ✅ | ❌ |
-| 既存翻訳マージ | ✅ | ❌ |
-| メンテナンス | 2026年（最新） | 2018年（停止） |
-| 日本語特化 | ✅ | 中国語メイン |
+内のXMLファイルから既存翻訳を読み込み、抽出結果へ反映します。
 
-## トラブルシューティング
+現時点ではKeyedの既存翻訳読み込みには完全対応していません。
 
-### XMLパースエラー
-```
-Warning: Could not parse /path/to/file.xml: not well-formed
-```
-→ Modの元XMLファイルが壊れている可能性があります。Mod作者に報告してください。
+プロジェクトの方向性
 
-### 翻訳が見つからない
-```
-No translatable content found.
-```
-→ Modフォルダのパスが正しいか確認してください。`Defs`フォルダが存在する必要があります。
+今後は以下の機能を順次改善する予定です。
 
-### Keyedファイルがない
-```
-Extracting Keyed translations... (0 found)
-```
-→ 一部のModはKeyedファイルを持ちません。`--no-keyed`で警告を抑制できます。
+* DefInjectedパス生成の改善
+* XML翻訳テンプレート生成
+* Keyed翻訳マージ
+* Patches対応
+* 翻訳進捗レポート
+* LoadFolders.xml生成
+* XML継承・参照処理
+* GUIの改善
 
-## ライセンス
+注意事項
 
-MIT License - 詳細は [LICENSE](LICENSE) を参照
+このツールは開発中です。
 
-## 貢献
+ModによってXML構造が大きく異なるため、すべてのRimWorld Modで正確な翻訳データを生成できることを保証するものではありません。
 
-Pull Request歓迎！バグ報告や機能要望はIssuesへ。
+生成・抽出したデータは、実際にModへ導入する前に内容を確認してください。
 
-## 参考資料
+ライセンス
 
-- [RimWorld公式](https://rimworldgame.com/)
-- [RimWorld Modding Wiki](https://rimworldwiki.com/wiki/Modding_Tutorials)
-- [RimWorld Localization Guide](https://rimworldwiki.com/wiki/Modding_Tutorials/Localization)
-- [RimTrans (Original)](https://github.com/RimWorld-zh/RimTrans)
+MIT License
 
-## 更新履歴
+詳細は LICENSE を参照してください。
 
-### v2.0 (2026-03-22)
-- ✨ Keyed翻訳対応追加
-- ✨ Patches翻訳対応追加
-- ✨ LoadFolders.xml自動生成
-- ✨ 翻訳進捗レポート機能
-- ✨ 既存翻訳マージ機能
-- 🎯 翻訳可能フィールドを16種類に拡張
-- 🐛 XMLパースエラーハンドリング改善
+参考
 
-### v1.0 (2026-03-22)
-- 🎉 初回リリース
-- ✨ DefInjected翻訳対応
+* RimWorld
+* RimWorld Modding Wiki
+* RimWorld Localization Guide
+* RimTrans
+
+RimTransおよび既存のRimWorld翻訳ツールの設計・考え方を参考にしています。
